@@ -9,6 +9,7 @@ namespace Test_Taste_Console_Application.Domain.Services.Interfaces
     ///</summary>
     public interface IPlanetService
     {
-        IEnumerable<Planet> GetAllPlanets();
+        //Add isFromCalculateGravityMethod param to identify from which method it is called, and used as a flg param
+        IEnumerable<Planet> GetAllPlanets(bool isFromCalculateGravityMethod = false);
     }
 }

@@ -22,9 +22,16 @@ namespace Test_Taste_Console_Application.Domain.Services
             _httpClientService = httpClientService;
         }
 
-        public IEnumerable<Planet> GetAllPlanets()
+
+        //Here isFromCalculateGravityMethod param is added as this method is called from two place, so to identiry and write console message accordingly
+        public IEnumerable<Planet> GetAllPlanets(bool isFromCalculateGravityMethod = false)
         {
             var allPlanetsWithTheirMoons = new Collection<Planet>();
+
+            if(isFromCalculateGravityMethod)
+                ConsoleWriter.WriteLine("Fetching Plantet and it's moon info");
+            else
+                ConsoleWriter.WriteLine("Preparing detail report for each planet");
 
             var response = _httpClientService.Client
                 .GetAsync(UriPath.GetAllPlanetsWithMoonsQueryParameters)
@@ -33,6 +40,7 @@ namespace Test_Taste_Console_Application.Domain.Services
             //If the status code isn't 200-299, then the function returns an empty collection.
             if (!response.IsSuccessStatusCode)
             {
+                ConsoleWriter.WriteLine("Oops!... something went wrong");
                 Logger.Instance.Warn($"{LoggerMessage.GetRequestFailed}{response.StatusCode}");
                 return allPlanetsWithTheirMoons;
             }
@@ -46,13 +54,17 @@ namespace Test_Taste_Console_Application.Domain.Services
             if (results == null) return allPlanetsWithTheirMoons;
 
             //If the planet doesn't have any moons, then it isn't added to the collection.
+            if(isFromCalculateGravityMethod)
+            ConsoleWriter.WriteLine("Analyisng moons data"); // In backend reading the moon data for each planet
             foreach (var planet in results.Bodies)
             {
-                if(planet.Moons != null)
+                if(isFromCalculateGravityMethod)
+                ConsoleWriter.WriteLine($"Analysing data for {planet.Id}'s moon");
+                if (planet.Moons != null)
                 {
                     var newMoonsCollection = new Collection<MoonDto>();
                     foreach (var moon in planet.Moons)
-                    {
+                    {                      
                         var moonResponse = _httpClientService.Client
                             .GetAsync(UriPath.GetMoonByIdQueryParameters + moon.URLId)
                             .Result;
@@ -61,10 +73,11 @@ namespace Test_Taste_Console_Application.Domain.Services
                     }
                     planet.Moons = newMoonsCollection;
 
-                }
+                }        
                 allPlanetsWithTheirMoons.Add(new Planet(planet));
             }
-
+            if(isFromCalculateGravityMethod)
+            ConsoleWriter.WriteLine("Few more moments... till we calculate final data");
             return allPlanetsWithTheirMoons;
         }
 

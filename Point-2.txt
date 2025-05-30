@@ -1,0 +1,4 @@
+Point - 2 ( Scope of improvement)
+
+Current issue:- We are printing gravity average and then moons details, for this we are calling API 2 times.
+Solution:- create a method and in this method first get the data of planet and moon and store this in the variable, and then pass this data as a variable and directly print the data instead of calling API 2 times. 

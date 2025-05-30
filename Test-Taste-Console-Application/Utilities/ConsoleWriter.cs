@@ -76,5 +76,11 @@ namespace Test_Taste_Console_Application.Utilities
                 Console.WriteLine();
             }
         }
+
+        //This method is created to write the console message directly to console.
+        public static void WriteLine(string text)
+        {
+            Console.WriteLine(text);
+        }
     }
 }
